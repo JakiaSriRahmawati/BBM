@@ -13,7 +13,7 @@ function calculate_bbm($jenis_bbm, $uang_dibelikan, $total_uang, $harga_per_lite
 }
 
 function parse_input($input) {
-    $input = str_replace(['Rp', ' ', 'IDR'], '', $input);
+    $input = preg_replace('/[^0-9]/', '', $input);
     return (int) $input;
 }
 
