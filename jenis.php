@@ -29,14 +29,12 @@ function main() {
         return;
     }
 
-    echo "Masukkan total uang yang dibayarkan : ";
-    $total_uang = (int) trim(fgets(STDIN));
-
     echo "Masukkan nominal uang yang dibelikan untuk BBM : ";
     $uang_dibelikan = (int) trim(fgets(STDIN));
 
+    echo "Masukkan total uang yang dibayarkan : ";
+    $total_uang = (int) trim(fgets(STDIN));
     
-
     if ($uang_dibelikan > $total_uang) {
         echo "Uang yang anda berikan tidak mencukupi pembelian!!.\n";
         return;
