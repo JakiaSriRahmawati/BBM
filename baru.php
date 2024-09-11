@@ -30,13 +30,11 @@ function main() {
         return;
     }
 
-    echo "Masukkan total uang yang dibayarkan: ";
-    $total_uang = (float) trim(fgets(STDIN));
-
-
     echo "Masukkan nominal uang yang dibelikan untuk BBM: ";
     $uang_dibelikan = (float) trim(fgets(STDIN));
 
+    echo "Masukkan total uang yang dibayarkan: ";
+    $total_uang = (float) trim(fgets(STDIN));
 
     if ($uang_dibelikan > $total_uang) {
         echo "Uang yang dibelikan tidak mencukupi!!.\n";
