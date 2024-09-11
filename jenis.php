@@ -21,6 +21,10 @@ function format_currency($amount) {
     return 'Rp' . number_format($amount, 0, ',', '.');
 }
 
+function validate_numeric($input) {
+    return preg_match('/^\d+$/', $input);
+}
+
 function main() {
     global $bbm_prices;
 
@@ -38,12 +42,24 @@ function main() {
         return;
     }
 
-    echo "Masukkan nominal uang yang dibelikan untuk BBM: ";
+    echo "Masukkan nominal uang yang dibelikan: ";
     $uang_dibelikan = trim(fgets(STDIN));
+
+    if (!validate_numeric(preg_replace('/[^0-9]/', '', $uang_dibelikan))) {
+        echo "Nominal uang yang diinputkan harus berupa angka!.\n";
+        return;
+    }
+
     $uang_dibelikan = parse_input($uang_dibelikan);
 
     echo "Masukkan total uang yang dibayarkan: ";
     $total_uang = trim(fgets(STDIN));
+
+    if (!validate_numeric(preg_replace('/[^0-9]/', '', $total_uang))) {
+        echo "Nominal uang yang diinputkan harus berupa angka!..\n";
+        return;
+    }
+
     $total_uang = parse_input($total_uang);
 
     if ($uang_dibelikan > $total_uang) {
