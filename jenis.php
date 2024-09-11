@@ -12,6 +12,15 @@ function calculate_bbm($jenis_bbm, $uang_dibelikan, $total_uang, $harga_per_lite
     return [$liter_didapat, $kembalian];
 }
 
+function parse_input($input) {
+    $input = str_replace(['Rp', ' ', 'IDR'], '', $input);
+    return (int) $input;
+}
+
+function format_currency($amount) {
+    return 'Rp' . number_format($amount, 0, ',', '.');
+}
+
 function main() {
     global $bbm_prices;
 
@@ -29,12 +38,14 @@ function main() {
         return;
     }
 
-    echo "Masukkan nominal uang yang dibelikan untuk BBM : ";
-    $uang_dibelikan = (int) trim(fgets(STDIN));
+    echo "Masukkan nominal uang yang dibelikan untuk BBM: ";
+    $uang_dibelikan = trim(fgets(STDIN));
+    $uang_dibelikan = parse_input($uang_dibelikan);
 
-    echo "Masukkan total uang yang dibayarkan : ";
-    $total_uang = (int) trim(fgets(STDIN));
-    
+    echo "Masukkan total uang yang dibayarkan: ";
+    $total_uang = trim(fgets(STDIN));
+    $total_uang = parse_input($total_uang);
+
     if ($uang_dibelikan > $total_uang) {
         echo "Uang yang anda berikan tidak mencukupi pembelian!!.\n";
         return;
@@ -49,11 +60,11 @@ function main() {
 
     $output = [
         'Jenis_BBM' => $jenis_bbm,
-        'Harga_per_liter' => $bbm_prices[$jenis_bbm],
-        'Uang_dibayarkan' => $total_uang,
-        'Uang_dibelikan_BBM' => $uang_dibelikan,
+        'Harga_per_liter' => format_currency($bbm_prices[$jenis_bbm]),
+        'Uang_dibayarkan' => format_currency($total_uang),
+        'Uang_dibelikan_BBM' => format_currency($uang_dibelikan),
         'Jumlah_BBM_didapat' => number_format($liter_didapat, 2),
-        'Kembalian' => $kembalian
+        'Kembalian' => format_currency($kembalian)
     ];
 
     $yaml_output = "---------------------\n";
