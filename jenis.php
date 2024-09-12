@@ -1,4 +1,8 @@
+
 <?php
+// Konstanta untuk Pajak Pertambahan Nilai (PPN)
+const PPN_RATE = 11;
+
 $bbm_prices = [
     "Pertamax" => 12500,
     "Pertalite" => 10000,
@@ -7,11 +11,13 @@ $bbm_prices = [
 ];
 
 function calculate_bbm($jenis_bbm, $uang_dibelikan, $total_uang, $harga_per_liter, $diskon = 0) {
-  
+    // Menghitung harga setelah diskon
     $harga_setelah_diskon = $harga_per_liter - ($harga_per_liter * ($diskon / 100));
-    $liter_didapat = $uang_dibelikan / $harga_setelah_diskon;
+    // Menambahkan PPN 11% setelah diskon
+    $harga_setelah_ppn = $harga_setelah_diskon + ($harga_setelah_diskon * (PPN_RATE / 100));
+    $liter_didapat = $uang_dibelikan / $harga_setelah_ppn;
     $kembalian = $total_uang - $uang_dibelikan;
-    return [$liter_didapat, $kembalian, $harga_setelah_diskon];
+    return [$liter_didapat, $kembalian, $harga_setelah_diskon, $harga_setelah_ppn];
 }
 
 function parse_input($input) {
@@ -73,7 +79,7 @@ function main() {
         return;
     }
 
-   
+    // Diskon (optional)
     echo "Masukkan diskon (misalnya 10% atau kosongkan saja jika tidak ada): ";
     $diskon_input = trim(fgets(STDIN));
 
@@ -95,7 +101,7 @@ function main() {
         return;
     }
 
-    list($liter_didapat, $kembalian, $harga_setelah_diskon) = calculate_bbm(
+    list($liter_didapat, $kembalian, $harga_setelah_diskon, $harga_setelah_ppn) = calculate_bbm(
         $jenis_bbm,
         $uang_dibelikan,
         $total_uang,
@@ -108,6 +114,8 @@ function main() {
         'Harga Per Liter' => format_currency($bbm_prices[$jenis_bbm]),
         'Diskon' => $diskon . "%",
         'Harga Setelah Diskon' => format_currency($harga_setelah_diskon),
+        'PPN (' . PPN_RATE . '%)' => format_currency($harga_setelah_diskon * (PPN_RATE / 100)),
+        'Harga Setelah PPN' => format_currency($harga_setelah_ppn),
         'Uang Dibayarkan' => format_currency($total_uang),
         'Uang Dibelikan BBM' => format_currency($uang_dibelikan),
         'Jumlah BBM Didapat' => number_format($liter_didapat, 2) . " liter",
