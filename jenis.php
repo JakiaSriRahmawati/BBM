@@ -6,10 +6,12 @@ $bbm_prices = [
     "Solar" => 6000
 ];
 
-function calculate_bbm($jenis_bbm, $uang_dibelikan, $total_uang, $harga_per_liter) {
-    $liter_didapat = $uang_dibelikan / $harga_per_liter;
+function calculate_bbm($jenis_bbm, $uang_dibelikan, $total_uang, $harga_per_liter, $diskon = 0) {
+  
+    $harga_setelah_diskon = $harga_per_liter - ($harga_per_liter * ($diskon / 100));
+    $liter_didapat = $uang_dibelikan / $harga_setelah_diskon;
     $kembalian = $total_uang - $uang_dibelikan;
-    return [$liter_didapat, $kembalian];
+    return [$liter_didapat, $kembalian, $harga_setelah_diskon];
 }
 
 function parse_input($input) {
@@ -23,6 +25,10 @@ function format_currency($amount) {
 
 function validate_numeric($input) {
     return preg_match('/^\d+$/', $input);
+}
+
+function validate_discount_format($input) {
+    return preg_match('/^\d+%$/', $input);
 }
 
 function main() {
@@ -67,16 +73,41 @@ function main() {
         return;
     }
 
-    list($liter_didapat, $kembalian) = calculate_bbm(
+   
+    echo "Masukkan diskon (misalnya 10% atau kosongkan saja jika tidak ada): ";
+    $diskon_input = trim(fgets(STDIN));
+
+    if ($diskon_input === '') {
+        $diskon = 0; 
+    } elseif (!validate_discount_format($diskon_input)) {
+        echo "Format diskon tidak valid! Gunakan format seperti 10%.\n";
+        return;
+    } else {
+        $diskon = (int) rtrim($diskon_input, '%');
+    }
+
+    if ($diskon < 0) {
+        echo "Diskon tidak boleh negatif!.\n";
+        return;
+    }
+    if ($diskon > 100) {
+        echo "Diskon tidak boleh lebih dari 100%!.\n";
+        return;
+    }
+
+    list($liter_didapat, $kembalian, $harga_setelah_diskon) = calculate_bbm(
         $jenis_bbm,
         $uang_dibelikan,
         $total_uang,
-        $bbm_prices[$jenis_bbm]
+        $bbm_prices[$jenis_bbm],
+        $diskon
     );
 
     $output = [
         'Jenis BBM' => $jenis_bbm,
         'Harga Per Liter' => format_currency($bbm_prices[$jenis_bbm]),
+        'Diskon' => $diskon . "%",
+        'Harga Setelah Diskon' => format_currency($harga_setelah_diskon),
         'Uang Dibayarkan' => format_currency($total_uang),
         'Uang Dibelikan BBM' => format_currency($uang_dibelikan),
         'Jumlah BBM Didapat' => number_format($liter_didapat, 2) . " liter",
