@@ -30,9 +30,9 @@ function main() {
 
     echo "==== Daftar Harga BBM ====\n";
     foreach ($bbm_prices as $jenis => $harga) {
-        echo "$jenis: Rp$harga per liter\n";
+        printf("%-10s : %s per liter\n", $jenis, format_currency($harga));
     }
-    echo "=========================\n";
+    echo "==========================\n";
 
     echo "Pilih jenis BBM (Pertamax, Pertalite, Dexlite, Solar): ";
     $jenis_bbm = trim(fgets(STDIN));
@@ -56,7 +56,7 @@ function main() {
     $total_uang = trim(fgets(STDIN));
 
     if (!validate_numeric(preg_replace('/[^0-9]/', '', $total_uang))) {
-        echo "Nominal uang yang diinputkan harus berupa angka!..\n";
+        echo "Nominal uang yang diinputkan harus berupa angka!.\n";
         return;
     }
 
@@ -75,17 +75,22 @@ function main() {
     );
 
     $output = [
-        'Jenis_BBM' => $jenis_bbm,
-        'Harga_per_liter' => format_currency($bbm_prices[$jenis_bbm]),
-        'Uang_dibayarkan' => format_currency($total_uang),
-        'Uang_dibelikan_BBM' => format_currency($uang_dibelikan),
-        'Jumlah_BBM_didapat' => number_format($liter_didapat, 2),
+        'Jenis BBM' => $jenis_bbm,
+        'Harga Per Liter' => format_currency($bbm_prices[$jenis_bbm]),
+        'Uang Dibayarkan' => format_currency($total_uang),
+        'Uang Dibelikan BBM' => format_currency($uang_dibelikan),
+        'Jumlah BBM Didapat' => number_format($liter_didapat, 2) . " liter",
         'Kembalian' => format_currency($kembalian)
     ];
 
+    echo "\n==== Data Pembelian BBM ====\n";
+    foreach ($output as $key => $value) {
+        printf("%-25s: %s\n", $key, $value);
+    }
+
     $yaml_output = "---------------------\n";
     foreach ($output as $key => $value) {
-        $yaml_output .= "$key: $value\n";
+        $yaml_output .= sprintf("%-25s: %s\n", $key, $value);
     }
 
     file_put_contents('hasil.yaml', $yaml_output);
@@ -93,4 +98,3 @@ function main() {
 }
 
 main();
-?>
