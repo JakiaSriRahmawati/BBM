@@ -1,6 +1,5 @@
 
 <?php
-// Konstanta untuk Pajak Pertambahan Nilai (PPN)
 const PPN_RATE = 11;
 
 $bbm_prices = [
@@ -11,9 +10,7 @@ $bbm_prices = [
 ];
 
 function calculate_bbm($jenis_bbm, $uang_dibelikan, $total_uang, $harga_per_liter, $diskon = 0) {
-    // Menghitung harga setelah diskon
     $harga_setelah_diskon = $harga_per_liter - ($harga_per_liter * ($diskon / 100));
-    // Menambahkan PPN 11% setelah diskon
     $harga_setelah_ppn = $harga_setelah_diskon + ($harga_setelah_diskon * (PPN_RATE / 100));
     $liter_didapat = $uang_dibelikan / $harga_setelah_ppn;
     $kembalian = $total_uang - $uang_dibelikan;
@@ -79,7 +76,6 @@ function main() {
         return;
     }
 
-    // Diskon (optional)
     echo "Masukkan diskon (misalnya 10% atau kosongkan saja jika tidak ada): ";
     $diskon_input = trim(fgets(STDIN));
 
